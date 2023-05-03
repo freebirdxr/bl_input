@@ -37,7 +37,7 @@ start_input_tracking()
 ### XR
 The callback will contain `"XR_ACTION"` as the first argument, and an instance of [`bpy.types.Event`](https://docs.blender.org/api/current/bpy.types.Event.html) as the second argument.
 
-You can access the XR event data using the `xr` field in the event object, which will be an instance of [`bpy.types.XrEventData`](https://docs.blender.org/api/current/bpy.types.XrEventData.html)
+You can access the XR event data using the `xr` field in the event object, which will be an instance of [`bpy.types.XrEventData`](https://docs.blender.org/api/current/bpy.types.XrEventData.html).
 
 The `event.xr.action` field will contain one of the following values, depending on which was triggered:
 * `"trigger"`
