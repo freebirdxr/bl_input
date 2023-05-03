@@ -19,11 +19,11 @@ sys.path.append(os.path.dirname(__file__))
 from input import add_event_listener, start_input_tracking
 import bpy
 
-def on_event(event_type: str, blender_event: bpy.types.Event):
+def on_event(event_type: str, bl_event: bpy.types.Event):
     if event_type == "XR_ACTION":
-        print("xr event", blender_event.xr.action, blender_event.value)
+        print("xr event", bl_event.xr.action, bl_event.value)
     elif event_type == "MOUSEMOVE":
-        print("mouse moved", blender_event)
+        print("mouse move", bl_event.mouse_x, bl_event.mouse_y)
 
 # register the event callback
 add_event_listener(event_callback=on_event)
