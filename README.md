@@ -6,7 +6,9 @@ Sends events to the registered callback for common XR Controller buttons, XR Con
 **TODO:** Allow this to be used even without XR.
 
 ## Installation
-Copy the `bl_input` folder to your Blender plugin's root folder. To avoid an import error, you may need add these lines to your plugin's `__init__.py`, before importing `bl_input`:
+Copy the `bl_input` folder to your Blender plugin's root folder. You can then import it using `import bl_input`.
+
+If you get a "module not found" error during import, please add these lines to your plugin's `__init__.py`, before importing `bl_input`:
 ```py
 import sys
 import os
