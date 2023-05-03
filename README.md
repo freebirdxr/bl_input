@@ -17,8 +17,9 @@ sys.path.append(os.path.dirname(__file__))
 ## Usage
 ```py
 from input import add_event_listener, start_input_tracking
+import bpy
 
-def on_event(event_type, blender_event):
+def on_event(event_type: str, blender_event: bpy.types.Event):
     print("event", event_type, blender_event)
 
 # register the event callback
@@ -34,20 +35,27 @@ start_input_tracking()
 
 ## Events
 ### XR
-* `trigger`
-* `squeeze`
-* `joystick_x_lefthand`
-* `joystick_y_lefthand`
-* `joystick_x_righthand`
-* `joystick_y_righthand`
-* `button_a_lefthand`
-* `button_b_lefthand`
-* `button_a_righthand`
-* `button_b_righthand`
-* `button_a_touch_lefthand`
-* `button_b_touch_lefthand`
-* `button_a_touch_righthand`
-* `button_b_touch_righthand`
+The callback will contain `"XR_ACTION"` as the first argument, and an instance of `bpy.types.Event` as the second argument.
+
+You can access the XR event data using the `xr` field in the event object.
+
+The `event.xr.action` field will contain one of the following values, depending on which was triggered:
+* `"trigger"`
+* `"squeeze"`
+* `"joystick_x_lefthand"`
+* `"joystick_y_lefthand"`
+* `"joystick_x_righthand"`
+* `"joystick_y_righthand"`
+* `"button_a_lefthand"`
+* `"button_b_lefthand"`
+* `"button_a_righthand"`
+* `"button_b_righthand"`
+* `"button_a_touch_lefthand"`
+* `"button_b_touch_lefthand"`
+* `"button_a_touch_righthand"`
+* `"button_b_touch_righthand"`
+
+Multiple events can be dispatched in parallel, for e.g. if both the trigger and squeeze buttons are being pressed.
 
 ### Mouse
-* `MOUSEMOVE`
+The callback will contain `"MOUSEMOVE"` as the first argument, and an instance of `bpy.types.Event` as the second argument.
