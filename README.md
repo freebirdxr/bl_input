@@ -21,7 +21,7 @@ import bpy
 
 def on_event(event_type: str, blender_event: bpy.types.Event):
     if event_type == "XR_ACTION":
-        print("xr event", blender_event.xr.action)
+        print("xr event", blender_event.xr.action, blender_event.value)
     elif event_type == "MOUSEMOVE":
         print("mouse moved", blender_event)
 
