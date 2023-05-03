@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+import bpy
+
+
+def add_event_listener(event_callback):
+    from . import actionset
+
+    actionset.event_callback = event_callback
+
+
+def start_input_tracking():
+    from . import bindings
+    from .actionset import make_actions, ACTION_SET_NAME
+
+    xr_session_state = bpy.context.window_manager.xr_session_state
+
+    # generate the mappings
+    print("number of actionsets", len(xr_session_state.actionmaps))  # maybe skip if already bound
+    actionset = xr_session_state.actionmaps.new(xr_session_state, ACTION_SET_NAME, True)
+    make_actions(actionset)
+
+    # bind the mappings
+    if not xr_session_state.action_set_create(bpy.context, actionset):
+        raise RuntimeError("Could not make actionset!")
+
+    for action in actionset.actionmap_items:
+        if not xr_session_state.action_create(bpy.context, actionset, action):
+            raise RuntimeError(f"Could not make action: {action.name}")
+
+        for binding in action.bindings:
+            if binding.name in bindings.DISABLED_PROFILES:
+                continue
+
+            if not xr_session_state.action_binding_create(bpy.context, actionset, action, binding):
+                raise RuntimeError(f"Could not make action binding: {action.name} to {binding.name}")
+
+    # bind the pose tracking
+    xr_session_state.controller_pose_actions_set(bpy.context, ACTION_SET_NAME, "controller_grip", "controller_aim")
+
+    # start tracking!
+    if not xr_session_state.active_action_set_set(bpy.context, ACTION_SET_NAME):
+        raise RuntimeError("Could not activate actionset!")
