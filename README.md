@@ -1,9 +1,7 @@
 # bl_input
-An easy way to get input events as callbacks in Blender (including OpenXR controller events). Triggers callbacks for events without requiring you to write custom actionsets, operators etc.
+An easy way to get XR input events as callbacks in Blender. Triggers callbacks for events without requiring you to write custom actionsets, operators etc. Also sends non-XR events for convenience.
 
 Sends events to the registered callback for common XR Controller buttons, XR Controller movement, mouse movement etc.
-
-**TODO:** Allow this to be used even without XR.
 
 ## Installation
 Copy the `bl_input` folder to your Blender plugin's root folder. You can then import it using `import bl_input`.
