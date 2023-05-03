@@ -31,3 +31,23 @@ bpy.ops.wm.xr_session_toggle()
 # **important:** this should be called only after the XR view has started!
 start_input_tracking()
 ```
+
+## Events
+### XR
+* `trigger`
+* `squeeze`
+* `joystick_x_lefthand`
+* `joystick_y_lefthand`
+* `joystick_x_righthand`
+* `joystick_y_righthand`
+* `button_a_lefthand`
+* `button_b_lefthand`
+* `button_a_righthand`
+* `button_b_righthand`
+* `button_a_touch_lefthand`
+* `button_b_touch_lefthand`
+* `button_a_touch_righthand`
+* `button_b_touch_righthand`
+
+### Mouse
+* `MOUSEMOVE`
