@@ -39,7 +39,7 @@ The callback will contain `"XR_ACTION"` as the first argument, and an instance o
 
 You can access the XR event data using the `xr` field in the event object, which will be an instance of [`bpy.types.XrEventData`](https://docs.blender.org/api/current/bpy.types.XrEventData.html).
 
-The `event.xr.action` field will contain one of the following values, depending on which was triggered:
+The `event.xr.action` field will contain one of the following values, depending on which button was pressed/touched:
 * `"trigger"`
 * `"squeeze"`
 * `"joystick_x_lefthand"`
