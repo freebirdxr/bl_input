@@ -20,7 +20,10 @@ from input import add_event_listener, start_input_tracking
 import bpy
 
 def on_event(event_type: str, blender_event: bpy.types.Event):
-    print("event", event_type, blender_event)
+    if event_type == "XR_ACTION":
+        print("xr event", blender_event.xr.action)
+    elif event_type == "MOUSEMOVE":
+        print("mouse moved", blender_event)
 
 # register the event callback
 add_event_listener(event_callback=on_event)
