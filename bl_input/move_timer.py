@@ -5,8 +5,8 @@ CONTROLLER_MOVE_TRACKING_INTERVAL = 1 / CONTROLLER_MOVE_TRACKING_FPS
 
 
 class XRControllerMoveOperator(bpy.types.Operator):
-    bl_idname = "bl_xr.start_xr_move_timer"
-    bl_label = "bl_xr: Move Timer"
+    bl_idname = "bl_input.start_xr_move_timer"
+    bl_label = "bl_input: Move Timer"
 
     _timer = None
 
