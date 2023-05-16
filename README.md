@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(__file__))
 
 ## Usage
 ```py
-from input import add_event_listener, start_input_tracking
+import bl_input
 import bpy
 
 def on_event(event_type: str, bl_event: bpy.types.Event):
@@ -26,18 +26,18 @@ def on_event(event_type: str, bl_event: bpy.types.Event):
         print("mouse move", bl_event.mouse_x, bl_event.mouse_y)
 
 # register the event callback
-add_event_listener(event_callback=on_event)
+bl_input.event_callback = on_event
 
 # start XR view
 bpy.ops.wm.xr_session_toggle()
 
 # start tracking the input devices.
 # **important:** this should be called only after the XR view has started!
-start_input_tracking()
+bl_input.start_input_tracking()
 ```
 
 ## Events
-### XR
+### XR Actions
 The callback will contain `"XR_ACTION"` as the first argument, and an instance of [`bpy.types.Event`](https://docs.blender.org/api/current/bpy.types.Event.html) as the second argument.
 
 You can access the XR event data using the `xr` field in the event object, which will be an instance of [`bpy.types.XrEventData`](https://docs.blender.org/api/current/bpy.types.XrEventData.html).
@@ -62,3 +62,8 @@ Multiple events can be dispatched in parallel, for e.g. if both the trigger and 
 
 ### Mouse
 The callback will contain `"MOUSEMOVE"` as the first argument, and an instance of [`bpy.types.Event`](https://docs.blender.org/api/current/bpy.types.Event.html) as the second argument.
+
+### XR Controller Movement
+The callback will contain `"XR_CONTROLLER_MOVE"` as the first argument, and a tuple as the second argument `(hand, position, rotation, context)`.
+
+The tuple will contain the following values (in order): `"hand"` (`"RIGHT"` or `"LEFT"`), `"position"` (Vector), `"rotation"` (Quaternion) and `"context"` (bpy.context).

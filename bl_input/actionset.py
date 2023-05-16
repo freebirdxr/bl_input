@@ -8,8 +8,6 @@ import bpy
 
 ACTION_SET_NAME = "bl_controller_actionset"
 
-event_callback = None
-
 
 @dataclass
 class Action:
@@ -72,6 +70,8 @@ def make_actions(actionset):
 
 
 def make_operator(action_name):
+    import bl_input
+
     op = f"dispatch.{action_name}_event_op"
 
     class EventOperator(bpy.types.Operator):
@@ -82,10 +82,10 @@ def make_operator(action_name):
             if event.type != "XR_ACTION":
                 xr_session = context.window_manager.xr_session_state
                 if event.type == "MOUSEMOVE" and xr_session and xr_session.is_running:
-                    event_callback(event.type, event)
+                    bl_input.event_callback(event.type, event)
                 return {"PASS_THROUGH"}
 
-            event_callback(event.type, event)
+            bl_input.event_callback(event.type, event)
 
             return {"RUNNING_MODAL"}
 

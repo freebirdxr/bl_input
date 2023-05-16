@@ -2,14 +2,20 @@
 
 import bpy
 
-
-def add_event_listener(event_callback):
-    from . import actionset
-
-    actionset.event_callback = event_callback
+event_callback = None
+send_movement_events = False
 
 
 def start_input_tracking():
+    from . import move_timer  # to register the operator
+
+    _start_tracking_xr_actions()
+
+    if send_movement_events:
+        bpy.ops.bl_xr.start_xr_move_timer()
+
+
+def _start_tracking_xr_actions():
     from . import bindings
     from .actionset import make_actions, ACTION_SET_NAME
 
