@@ -21,6 +21,9 @@ def _start_tracking_xr_actions():
 
     xr_session_state = bpy.context.window_manager.xr_session_state
 
+    if not xr_session_state:
+        return
+
     # generate the mappings
     print("number of actionsets", len(xr_session_state.actionmaps))  # maybe skip if already bound
     actionset = xr_session_state.actionmaps.new(xr_session_state, ACTION_SET_NAME, True)

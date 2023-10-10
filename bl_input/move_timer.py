@@ -13,8 +13,8 @@ class XRControllerMoveOperator(bpy.types.Operator):
     def modal(self, context, event):
         xr_session = context.window_manager.xr_session_state
         if event.type == "TIMER" and xr_session:
-            self.dispatch_move_event(xr_session, context, "RIGHT")
-            self.dispatch_move_event(xr_session, context, "LEFT")
+            self.dispatch_move_event(xr_session, context, "right")
+            self.dispatch_move_event(xr_session, context, "left")
 
         if not xr_session or not xr_session.is_running:
             self.cancel(context)
@@ -35,7 +35,7 @@ class XRControllerMoveOperator(bpy.types.Operator):
     def dispatch_move_event(self, xr_session, context, hand):
         import bl_input
 
-        hand_idx = 1 if hand == "RIGHT" else 0
+        hand_idx = 1 if hand == "right" else 0
         position = xr_session.controller_aim_location_get(context, hand_idx)
         rotation = xr_session.controller_aim_rotation_get(context, hand_idx)
 
