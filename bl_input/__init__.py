@@ -13,6 +13,7 @@ def start_input_tracking():
 
     if send_movement_events:
         bpy.ops.bl_input.start_xr_move_timer()
+        bpy.ops.bl_input.mouse_event_op("INVOKE_DEFAULT")
 
 
 def _start_tracking_xr_actions():

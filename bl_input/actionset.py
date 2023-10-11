@@ -80,9 +80,6 @@ def make_operator(action_name):
 
         def modal(self, context, event):
             if event.type != "XR_ACTION":
-                xr_session = context.window_manager.xr_session_state
-                if event.type == "MOUSEMOVE" and xr_session and xr_session.is_running:
-                    bl_input.event_callback(event.type, event)
                 return {"PASS_THROUGH"}
 
             bl_input.event_callback(event.type, event)
@@ -100,3 +97,32 @@ def make_operator(action_name):
     bpy.utils.register_class(EventOperator)
 
     return op
+
+
+class MouseEventOperator(bpy.types.Operator):
+    bl_idname = "bl_input.mouse_event_op"
+    bl_label = f"Dispatch mouse event op"
+
+    def modal(self, context, event):
+        import bl_input
+
+        if event.type == "MOUSEMOVE":
+            xr_session = context.window_manager.xr_session_state
+            if xr_session and xr_session.is_running:
+                bl_input.event_callback(event.type, event)
+                return {"PASS_THROUGH"}
+
+            return {"CANCELLED"}
+
+        return {"PASS_THROUGH"}
+
+    def invoke(self, context, event):
+        if context.area.type != "VIEW_3D":
+            self.report({"WARNING"}, "View3D not found, cannot run operator")
+            return {"CANCELLED"}
+
+        context.window_manager.modal_handler_add(self)
+        return {"RUNNING_MODAL"}
+
+
+bpy.utils.register_class(MouseEventOperator)
