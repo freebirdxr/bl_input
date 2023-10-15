@@ -7,13 +7,14 @@ send_movement_events = False
 
 
 def start_input_tracking():
-    from . import move_timer  # don't remove. required for registering the operator
+    # don't remove these imports. required for registering the operator
+    from . import move_timer, actionset
 
     _start_tracking_xr_actions()
 
     if send_movement_events:
         bpy.ops.bl_input.start_xr_move_timer()
-        bpy.ops.bl_input.mouse_event_op("INVOKE_DEFAULT")
+        bpy.ops.bl_input.mouse_event_op()
 
 
 def _start_tracking_xr_actions():

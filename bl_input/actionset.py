@@ -116,12 +116,7 @@ class MouseEventOperator(bpy.types.Operator):
 
         return {"PASS_THROUGH"}
 
-    def invoke(self, context, event):
-        if context.area.type != "VIEW_3D":
-            self.report({"WARNING"}, "View3D not found, cannot run operator")
-            return {"CANCELLED"}
-
-        context.window_manager.modal_handler_add(self)
+    def execute(self, context):
         return {"RUNNING_MODAL"}
 
 
