@@ -84,6 +84,9 @@ def make_operator(action_name):
 
             bl_input.event_callback(event.type, event)
 
+            if event.value == 'RELEASE':
+                return {'FINISHED'}
+
             return {"RUNNING_MODAL"}
 
         def invoke(self, context, event):
