@@ -111,7 +111,7 @@ class MouseEventOperator(bpy.types.Operator):
 
         if event.type == "MOUSEMOVE":
             xr_session = context.window_manager.xr_session_state
-            if xr_session and xr_session.is_running:
+            if xr_session and xr_session.is_running(context):
                 bl_input.event_callback(event.type, event)
                 return {"PASS_THROUGH"}
 
@@ -120,6 +120,7 @@ class MouseEventOperator(bpy.types.Operator):
         return {"PASS_THROUGH"}
 
     def execute(self, context):
+        context.window_manager.modal_handler_add(self)
         return {"RUNNING_MODAL"}
 
 
