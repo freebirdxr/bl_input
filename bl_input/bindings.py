@@ -100,7 +100,7 @@ BUTTON_B_RIGHTHAND_TOUCH_COMPONENT_PATHS = {
 }
 
 THRESHOLD = {
-    "trigger": 0.3,
+    "trigger": 0.05,
     "squeeze": 0.3,
     "joystick": 0.3,
     "button": 0.3,
