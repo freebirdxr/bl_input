@@ -79,7 +79,7 @@ def make_operator(action_name):
         bl_label = f"Dispatch {action_name} event op"
 
         def modal(self, context, event):
-            if event.type != "XR_ACTION":
+            if event.type != "XR_ACTION" or event.xr.action != action_name:
                 return {"PASS_THROUGH"}
 
             bl_input.event_callback(event.type, event)
