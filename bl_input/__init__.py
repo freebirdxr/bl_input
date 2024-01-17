@@ -52,3 +52,43 @@ def _start_tracking_xr_actions():
     # start tracking!
     if not xr_session_state.active_action_set_set(bpy.context, ACTION_SET_NAME):
         raise RuntimeError("Could not activate actionset!")
+
+
+def apply_haptic_feedback(hand="right", duration=200, strength=1, type="TINY_LIGHT"):
+    """
+    * hand: "right" or "left"
+    * type: preset type of haptic feedback (`TINY_LIGHT`, `TINY_STRONG`, `SHORT_LIGHT`, `SHORT_STRONG`).
+    * duration: custom duration of feedback (in milliseconds)
+    * strength: custom feedback strength (0 to 1, where 1 is strongest)
+
+    Note: `duration` and `strength` will be ignored if `type` is set.
+    """
+
+    from .actionset import ACTION_SET_NAME
+
+    xr_session_state = bpy.context.window_manager.xr_session_state
+
+    if not xr_session_state:
+        return
+
+    user_path = "/user/hand/" + hand.lower()
+
+    if type == "TINY_LIGHT":
+        duration = 20000
+        strength = 0.35
+    elif type == "TINY_STRONG":
+        duration = 20000
+        strength = 0.6
+    elif type == "SHORT_LIGHT":
+        duration = 40000
+        strength = 0.4
+    elif type == "SHORT_STRONG":
+        duration = 40000
+        strength = 1
+
+    frequency = 0
+
+    applied = xr_session_state.haptic_action_apply(
+        bpy.context, ACTION_SET_NAME, "haptic", user_path, duration, frequency, strength
+    )
+    return applied

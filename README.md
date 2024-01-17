@@ -67,3 +67,6 @@ The callback will contain `"MOUSEMOVE"` as the first argument, and an instance o
 The callback will contain `"XR_CONTROLLER_MOVE"` as the first argument, and a tuple as the second argument `(hand, position, rotation, context)`.
 
 The tuple will contain the following values (in order): `"hand"` (`"right"` or `"left"`), `"position"` (Vector), `"rotation"` (Quaternion) and `"context"` (bpy.context).
+
+### Haptic feedback
+Call `bl_input.apply_haptic_feedback()` to apply haptic feedback. See the function documentation for info.
