@@ -103,7 +103,7 @@ THRESHOLD = {
     "trigger": 0.05,
     "squeeze": 0.3,
     "joystick": 0.3,
-    "button": 0.3,
+    "button": 0.01,
 }
 
 
