@@ -70,8 +70,6 @@ def make_actions(actionset):
 
 
 def make_operator(action_name):
-    import bl_input
-
     op = f"dispatch.{action_name}_event_op"
 
     class EventOperator(bpy.types.Operator):
@@ -82,7 +80,9 @@ def make_operator(action_name):
             if event.type != "XR_ACTION" or event.xr.action != action_name:
                 return {"PASS_THROUGH"}
 
-            bl_input.event_callback(event.type, event)
+            from . import event_callback
+
+            event_callback(event.type, event)
 
             if event.value == "RELEASE":
                 return {"FINISHED"}
@@ -107,12 +107,12 @@ class MouseEventOperator(bpy.types.Operator):
     bl_label = f"Dispatch mouse event op"
 
     def modal(self, context, event):
-        import bl_input
-
         if event.type == "MOUSEMOVE":
             xr_session = context.window_manager.xr_session_state
             if xr_session and xr_session.is_running(context):
-                bl_input.event_callback(event.type, event)
+                from . import event_callback
+
+                event_callback(event.type, event)
                 return {"PASS_THROUGH"}
 
             return {"CANCELLED"}

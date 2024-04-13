@@ -33,13 +33,13 @@ class XRControllerMoveOperator(bpy.types.Operator):
         wm.event_timer_remove(self._timer)
 
     def dispatch_move_event(self, xr_session, context, hand):
-        import bl_input
+        from . import event_callback
 
         hand_idx = 1 if hand == "right" else 0
         position = xr_session.controller_aim_location_get(context, hand_idx)
         rotation = xr_session.controller_aim_rotation_get(context, hand_idx)
 
-        bl_input.event_callback("XR_CONTROLLER_MOVE", (hand, position, rotation, context))
+        event_callback("XR_CONTROLLER_MOVE", (hand, position, rotation, context))
 
 
 bpy.utils.register_class(XRControllerMoveOperator)
