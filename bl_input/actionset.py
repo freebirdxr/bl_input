@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from .bindings import make_bindings
+from .bindings import make_bindings, THRESHOLD
 
 from dataclasses import dataclass
 
@@ -84,7 +84,31 @@ def make_operator(action_name):
 
             event_callback(event.type, event)
 
+            xr = event.xr
+
+            # print(
+            #     xr.action,
+            #     event.value,
+            #     xr.bimanual,
+            #     xr.user_path,
+            #     xr.user_path_other,
+            #     xr.state[0],
+            #     xr.state_other[0],
+            # )
+
             if event.value == "RELEASE":
+                if xr.bimanual and xr.state_other[0] > THRESHOLD["trigger"]:
+                    # the 'other' hand's button is still pressing, don't complete this operator.
+                    # another RELEASE is coming, once the 'other' hand's button gets released.
+                    #
+                    # E.g:
+                    # squeeze PRESS True /user/hand/right /user/hand/left 1.0 1.0
+                    # squeeze PRESS True /user/hand/right /user/hand/left 0.6285713911056519 1.0
+                    # squeeze RELEASE True /user/hand/right /user/hand/left 0.0 1.0
+                    # squeeze PRESS False /user/hand/left  0.8595848679542542 0.0
+                    # squeeze RELEASE False /user/hand/left  0.03614157438278198 0.0
+                    return {"RUNNING_MODAL"}
+
                 return {"FINISHED"}
 
             return {"RUNNING_MODAL"}
