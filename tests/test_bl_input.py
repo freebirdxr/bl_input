@@ -202,7 +202,7 @@ def set_input(user_path, component, value):
     user_path_clean = user_path.lstrip("/")
     # Remove leading slash from component for URL construction
     component_clean = component.lstrip("/")
-    endpoint = f"/v1/states/{user_path_clean}/{component_clean}"
+    endpoint = f"/v1/inputs/{user_path_clean}/{component_clean}"
     result = api_request(endpoint, {"value": value}, method="PUT")
     time.sleep(0.1)  # Small delay to prevent HTTP connection pool exhaustion
     return result
