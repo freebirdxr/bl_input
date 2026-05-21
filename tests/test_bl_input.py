@@ -8,7 +8,7 @@ Tests the full integration path:
 We programmatically set input values via the simulator API, then verify that
 bl_input receives the correct values through its event callback.
 
-Requires: ox-simulator running in API mode (port 8765)
+Requires: ox-simulator HTTP API enabled on port 8765
 """
 
 import bpy
@@ -19,10 +19,17 @@ from collections import defaultdict
 
 import urllib.request
 
-
-SIMULATOR_API = "http://localhost:8765"
+SIMULATOR_API = "http://127.0.0.1:8765"
 STEP_DURATION = 1.0  # seconds to wait for events after setting inputs
 TOLERANCE = 0.05
+BOOLEAN_COMPONENT_SUFFIXES = (
+    "/click",
+    "/touch",
+)
+VEC2_COMPONENT_SUFFIXES = (
+    "/thumbstick",
+    "/trackpad",
+)
 
 # Test steps: set inputs via API, then verify bl_input receives them
 TEST_SEQUENCE = [
@@ -65,10 +72,8 @@ TEST_SEQUENCE = [
     {
         "name": "Step 4: Thumbstick movement",
         "inputs": [
-            {"user_path": "/user/hand/left", "component_path": "/input/thumbstick/x", "value": 0.8},
-            {"user_path": "/user/hand/left", "component_path": "/input/thumbstick/y", "value": -0.6},
-            {"user_path": "/user/hand/right", "component_path": "/input/thumbstick/x", "value": -0.4},
-            {"user_path": "/user/hand/right", "component_path": "/input/thumbstick/y", "value": 0.9},
+            {"user_path": "/user/hand/left", "component_path": "/input/thumbstick", "value": {"x": 0.8, "y": -0.6}},
+            {"user_path": "/user/hand/right", "component_path": "/input/thumbstick", "value": {"x": -0.4, "y": 0.9}},
         ],
         "expected": {
             "joystick_x_lefthand": 0.8,
@@ -152,8 +157,7 @@ TEST_SEQUENCE = [
             # New complex input
             {"user_path": "/user/hand/left", "component_path": "/input/trigger/value", "value": 0.8},
             {"user_path": "/user/hand/left", "component_path": "/input/squeeze/value", "value": 0.7},
-            {"user_path": "/user/hand/left", "component_path": "/input/thumbstick/x", "value": 0.5},
-            {"user_path": "/user/hand/left", "component_path": "/input/thumbstick/y", "value": -0.5},
+            {"user_path": "/user/hand/left", "component_path": "/input/thumbstick", "value": {"x": 0.5, "y": -0.5}},
             {"user_path": "/user/hand/right", "component_path": "/input/trigger/value", "value": 0.9},
         ],
         "expected": {
@@ -196,14 +200,30 @@ def api_request(endpoint, data=None, method="GET"):
         return None
 
 
+def binding_path(user_path, component_path):
+    return f"{user_path.rstrip('/')}{component_path}"
+
+
+def is_boolean_component(component_path):
+    return component_path.endswith(BOOLEAN_COMPONENT_SUFFIXES)
+
+
+def is_vector2_component(component_path):
+    return component_path.endswith(VEC2_COMPONENT_SUFFIXES)
+
+
 def set_input(user_path, component, value):
     """Set device input via simulator API."""
-    # Remove leading slash from user_path for URL construction
-    user_path_clean = user_path.lstrip("/")
-    # Remove leading slash from component for URL construction
-    component_clean = component.lstrip("/")
-    endpoint = f"/v1/inputs/{user_path_clean}/{component_clean}"
-    result = api_request(endpoint, {"value": value}, method="PUT")
+    endpoint = f"/v1/inputs/{binding_path(user_path, component).lstrip('/')}"
+
+    if is_boolean_component(component):
+        payload = {"value": bool(value)}
+    elif is_vector2_component(component):
+        payload = {"x": value["x"], "y": value["y"]}
+    else:
+        payload = {"value": value}
+
+    result = api_request(endpoint, payload, method="PUT")
     time.sleep(0.1)  # Small delay to prevent HTTP connection pool exhaustion
     return result
 
@@ -351,9 +371,15 @@ def main():
     print(f"\nChecking simulator API at {SIMULATOR_API}...")
     if api_request("/") is None:
         print("ERROR: Cannot connect to simulator API")
-        print("Make sure ox-driver-simulator is running in API mode on port 8765")
+        print("Make sure ox-simulator is running and its HTTP API is enabled on port 8765")
         sys.exit(1)
     print("✓ API connected")
+
+    print("\nSelecting oculus_quest_2 profile...")
+    if api_request("/v1/profile", {"profile_id": "oculus_quest_2"}, method="PUT") is None:
+        print("ERROR: Failed to select simulator profile")
+        sys.exit(1)
+    print("✓ Profile selected")
 
     # Find 3D View
     area = next((a for a in bpy.context.screen.areas if a.type == "VIEW_3D"), None)
